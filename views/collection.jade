@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  p Welcome to Items
+  table
+    -for(var x = 0; x < myArray.length; x++) 
+      tr
+      td= myArray[x]
