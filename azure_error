@@ -1,0 +1,17 @@
+Mon Sep 23 2013 17:08:05 GMT-0400 (Eastern Daylight Time):
+{ [Error: ENOENT, no such file or directory 'H:\.azure']
+  errno: 34,
+  code: 'ENOENT',
+  path: 'H:\\.azure',
+  syscall: 'mkdir' }
+Error: ENOENT, no such file or directory 'H:\.azure'
+    at Object.fs.mkdirSync (fs.js:483:18)
+    at Object.exports.azureDir (C:\Program Files (x86)\Microsoft SDKs\Windows Azure\CLI\lib\util\utils.js:557:8)
+    at Object.exports.init (C:\Program Files (x86)\Microsoft SDKs\Windows Azure\CLI\lib\commands\account.js:31:30)
+    at C:\Program Files (x86)\Microsoft SDKs\Windows Azure\CLI\lib\cli.js:814:46
+    at Array.forEach (native)
+    at harvestPlugins (C:\Program Files (x86)\Microsoft SDKs\Windows Azure\CLI\lib\cli.js:814:11)
+    at Object.<anonymous> (C:\Program Files (x86)\Microsoft SDKs\Windows Azure\CLI\lib\cli.js:931:1)
+    at Module._compile (module.js:449:26)
+    at Object.Module._extensions..js (module.js:467:10)
+    at Module.load (module.js:356:32)

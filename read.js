@@ -2,7 +2,7 @@ var http = require('http'),
 	https = require('https'),
 	groups = "",
 	events = "";
-var cache = require('memory-cache');
+//var cache = require('memory-cache');
 
 var options = {
   hostname: 'api.meetup.com',
@@ -21,12 +21,12 @@ var req = http.request(options, function(res) {
   	});
 	res.on('end', function() {
 		var groupObject = JSON.parse(groups);
-		cache.put('groups', groupObject, 5000);
+		//cache.put('groups', groupObject, 5000);
 		console.log('Count of groups: ' + groupObject.length);
 		setTimeout(function() {
-			var myGroups = cache.get('groups');
-			for (var i = 0; i < myGroups.length; i++) {
-				console.log(myGroups[i].name);
+			//var myGroups = cache.get('groups');
+			for (var i = 0; i < groupObject.length; i++) {
+				console.log(groupObject[i].name);
 			}
 		}, 500)
 		

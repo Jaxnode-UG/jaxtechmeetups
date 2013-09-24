@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  p Welcome to Events
+  table
+    -for(var x = 0; x < eventArray.length; x++) 
+      tr
+      td= eventArray[x].event_url
