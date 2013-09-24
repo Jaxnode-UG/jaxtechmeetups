@@ -1,11 +1,19 @@
 var https = require('https'),
-	events = "";
+	events = "",
+	groups = "";
 
 var httpsOptions = {
 	hostname: 'api.meetup.com',
 	port: 443,
 	path: '/2/open_events?&key=71453431395662501f61504236216c32&sign=true&category=34&zip=32246&radius=25&page=50',
 	method: 'GET'
+};
+
+var options = {
+  hostname: 'api.meetup.com',
+  port: 443,
+  path: '/2/groups?&sign=true&zip=32246&category_id=34&radius=25&page=50&key=71453431395662501f61504236216c32',
+  method: 'GET'
 };
 
 exports.events = function(req, res) {
@@ -18,13 +26,8 @@ exports.events = function(req, res) {
 		response.on('end', function() {
 			console.log('request has ended.');
 			var eventsObject = JSON.parse(events);
-			console.log(eventsObject.results.length);
-			//if (eventsObject.results !== 'undefined')
-			//{
-				res.render('events', { eventArray: eventsObject.results });
-			//} else {
-				//
-			//}
+			events = "";
+			res.render('events', { title: 'Events', eventArray: eventsObject.results });
 		});
 	});
 	sreq.on('error', function(e) {
@@ -32,4 +35,25 @@ exports.events = function(req, res) {
 	});
 	sreq.write('data\n');
 	sreq.end();
+};
+
+exports.groups = function (req, res) {
+	var greq = https.request(options, function (response) {
+		response.setEncoding('utf8');
+		response.on('data', function (chunk) {
+			console.log('receiving data.');
+			groups += chunk;
+		});
+		response.on('end', function() {
+			console.log('request has ended.');
+			var groupsObject = JSON.parse(groups);
+			groups = "";
+			res.render('groups', { title: 'Groups', groupArray: groupsObject.results });
+		});
+	});
+	greq.on('error', function(e) {
+		console.log('problem with request: ' + e.message);
+	});
+	greq.write('data\n');
+	greq.end();
 };

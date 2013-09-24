@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1 Jax Tech Meetup Groups
+  table
+    -for(var x = 0; x < groupArray.length; x++) 
+      tr
+      td= groupArray[x].name

@@ -1,8 +1,13 @@
 extends layout
 
 block content
-  p Welcome to Events
+  mixin link(href, name)
+    a(href=href)= name
+  
+  h1 Jax Upcoming Tech Events
   table
     -for(var x = 0; x < eventArray.length; x++) 
       tr
-      td= eventArray[x].event_url
+      td 
+        +link(eventArray[x].event_url, eventArray[x].group.name) 
+        = ' ' + new Date(eventArray[x].time).toString()
