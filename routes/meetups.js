@@ -1,6 +1,7 @@
 var https = require('https'),
 	events = "",
-	groups = "";
+	groups = "",
+	cache = require('memory-cache');
 
 var httpsOptions = {
 	hostname: 'api.meetup.com',
@@ -17,43 +18,57 @@ var options = {
 };
 
 exports.events = function(req, res) {
-	var sreq = https.request(httpsOptions, function (response) {
-		response.setEncoding('utf8');
-		response.on('data', function (chunk) {
-			console.log('receiving data.');
-			events += chunk;
+	var cEvents = cache.get('events');
+	if (cEvents !== null)
+	{
+		res.render('events', { title: 'Events', eventArray: cEvents });
+	} else {
+		var sreq = https.request(httpsOptions, function (response) {
+			response.setEncoding('utf8');
+			response.on('data', function (chunk) {
+				console.log('receiving data.');
+				events += chunk;
+			});
+			response.on('end', function() {
+				console.log('request has ended.');
+				var eventsObject = JSON.parse(events);
+				cache.put('events', eventsObject.results, 3600000);
+				events = "";
+				res.render('events', { title: 'Events', eventArray: eventsObject.results });
+			});
 		});
-		response.on('end', function() {
-			console.log('request has ended.');
-			var eventsObject = JSON.parse(events);
-			events = "";
-			res.render('events', { title: 'Events', eventArray: eventsObject.results });
+		sreq.on('error', function(e) {
+			console.log('problem with request: ' + e.message);
 		});
-	});
-	sreq.on('error', function(e) {
-		console.log('problem with request: ' + e.message);
-	});
-	sreq.write('data\n');
-	sreq.end();
+		sreq.write('data\n');
+		sreq.end();
+	}
 };
 
 exports.groups = function (req, res) {
-	var greq = https.request(options, function (response) {
-		response.setEncoding('utf8');
-		response.on('data', function (chunk) {
-			console.log('receiving data.');
-			groups += chunk;
+	var cGroups = cache.get('groups');
+	if (cGroups !== null)
+	{
+		res.render('groups', { title: 'Groups', groupArray: cGroups });
+	} else {
+		var greq = https.request(options, function (response) {
+			response.setEncoding('utf8');
+			response.on('data', function (chunk) {
+				console.log('receiving data.');
+				groups += chunk;
+			});
+			response.on('end', function() {
+				console.log('request has ended.');
+				var groupsObject = JSON.parse(groups);
+				cache.put('groups', groupsObject.results, 3600000);
+				groups = "";
+				res.render('groups', { title: 'Groups', groupArray: groupsObject.results });
+			});
 		});
-		response.on('end', function() {
-			console.log('request has ended.');
-			var groupsObject = JSON.parse(groups);
-			groups = "";
-			res.render('groups', { title: 'Groups', groupArray: groupsObject.results });
+		greq.on('error', function(e) {
+			console.log('problem with request: ' + e.message);
 		});
-	});
-	greq.on('error', function(e) {
-		console.log('problem with request: ' + e.message);
-	});
-	greq.write('data\n');
-	greq.end();
+		greq.write('data\n');
+		greq.end();
+	}
 };
