@@ -15,6 +15,8 @@ block content
       -hours = hours - 12
     -if (minutes.length === 1)
       -myminutes = '0' + minutes
+    -else
+      -myminutes = minutes
     em= ' ' + (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear() + ' ' + hours + ':' + myminutes + ' ' + ampm
   
   h1 Jax Upcoming Tech Events
