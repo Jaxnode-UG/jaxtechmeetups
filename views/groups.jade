@@ -1,8 +1,12 @@
 extends layout
 
 block content
+  mixin link(href, name)
+    a(href=href)= name
+
   h1 Jax Tech Meetup Groups
   table
-    -for(var x = 0; x < groupArray.length; x++) 
+    -each group in groupArray
       tr
-      td= groupArray[x].name
+      td 
+        +link(group.link, group.name)

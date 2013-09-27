@@ -3,11 +3,38 @@ extends layout
 block content
   mixin link(href, name)
     a(href=href)= name
+  mixin formatDateTime(time)
+    -var d = new Date(time)
+    -var minutes = d.getMinutes()
+    -var ampm = 'AM'
+    -var hours = d.getHours()
+    -var myminutes = '00'
+    -if (d.getHours() > 11)
+      -ampm = 'PM'
+    -if (d.getHours() > 12)
+      -hours = hours - 12
+    -if (minutes.length === 1)
+      -myminutes = '0' + minutes
+    em= ' ' + (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear() + ' ' + hours + ':' + myminutes + ' ' + ampm
   
   h1 Jax Upcoming Tech Events
-  table
-    -for(var x = 0; x < eventArray.length; x++) 
-      tr
-      td 
-        +link(eventArray[x].event_url, eventArray[x].group.name) 
-        = ' ' + new Date(eventArray[x].time).toString()
+  -for(var x = 0; x < eventArray.length; x++) 
+    div.panel.panel-default
+      div.panel-heading
+        h3= eventArray[x].group.name
+        +link(eventArray[x].event_url, eventArray[x].name) 
+      div.panel-body
+        +formatDateTime(eventArray[x].time)
+        -if (eventArray[x].venue && eventArray[x].venue.name)
+          div.well.well-lg= eventArray[x].venue.name
+            br
+            -if (eventArray[x].venue && eventArray[x].venue.address_1)
+              = eventArray[x].venue.address_1
+              br
+            -if (eventArray[x].venue && eventArray[x].venue.city)
+              = eventArray[x].venue.city
+            -if (eventArray[x].venue && eventArray[x].venue.state)
+              = ' ' + eventArray[x].venue.state
+            -if (eventArray[x].venue && eventArray[x].venue.zip)
+              = ' ' + eventArray[x].venue.zip
+        !{eventArray[x].description}
