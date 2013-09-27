@@ -4,9 +4,21 @@ block content
   mixin link(href, name)
     a(href=href)= name
 
+  style.
+    .inline { display: inline; }
+    .pill-pad { margin: 3px; }
   h1 Jax Tech Meetup Groups
-  table
-    -each group in groupArray
-      tr
-      td 
-        +link(group.link, group.name)
+  -each group in groupArray
+    div.panel.panel-default
+      div.panel-heading 
+        -if (group.group_photo && group.group_photo.thumb_link)
+          img(src= group.group_photo.thumb_link)
+        h3.inline 
+          +link(group.link, group.name)
+      div.panel-body 
+        p 
+          -each topic in group.topics
+            span.label.label-info.pill-pad= topic.name + ' '
+            span= ' '
+          br
+          !{group.description}
