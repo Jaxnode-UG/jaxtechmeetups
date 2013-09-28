@@ -25,6 +25,9 @@ app.configure(function(){
   app.use(express.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(function(req, res, next){
+    res.render('errors', { title: '404 This page does not exist.' });
+  });
 });
 
 app.configure('development', function(){

@@ -13,8 +13,8 @@ block content
       -ampm = 'PM'
     -if (d.getHours() > 12)
       -hours = hours - 12
-    -if (minutes.length === 1)
-      -myminutes = '0' + minutes
+    -if (minutes.toString().length === 1)
+      -myminutes = '0' + minutes.toString()
     -else
       -myminutes = minutes
     em= ' ' + (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear() + ' ' + hours + ':' + myminutes + ' ' + ampm
