@@ -30,6 +30,8 @@ app.configure(function(){
   });
 });
 
+app.locals.moment = require('moment');
+
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
