@@ -47,3 +47,7 @@ block content
             -if (eventArray[x].venue && eventArray[x].venue.zip)
               = ' ' + eventArray[x].venue.zip
         !{eventArray[x].description}
+
+block append scripts
+  script.
+    $(".panel-default img").addClass("img-responsive").removeAttr('style');
