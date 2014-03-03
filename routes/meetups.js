@@ -31,10 +31,18 @@ exports.events = function(req, res) {
 			});
 			response.on('end', function() {
 				console.log('request has ended.');
-				var eventsObject = JSON.parse(events);
-				cache.put('events', eventsObject.results, 3600000);
-				events = "";
-				res.render('events', { title: 'Events', eventArray: eventsObject.results });
+				console.log(events.toString().slice(0, 6));
+				if (events && events.toString().slice(0, 6) !== '<html>') {
+					console.log(events);
+					var eventsObject = JSON.parse(events);
+					cache.put('events', eventsObject.results, 3600000);
+					events = "";
+					res.render('events', { title: 'Events', eventArray: eventsObject.results });
+				} else {
+					var eventsObject = {};
+					eventsObject.results = [];
+					res.render('events', { title: 'Events', eventArray: eventsObject.results });
+				}
 			});
 		});
 		sreq.on('error', function(e) {
