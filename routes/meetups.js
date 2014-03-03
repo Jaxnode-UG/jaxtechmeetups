@@ -67,10 +67,17 @@ exports.groups = function (req, res) {
 			});
 			response.on('end', function() {
 				console.log('request has ended.');
-				var groupsObject = JSON.parse(groups);
-				cache.put('groups', groupsObject.results, 3600000);
-				groups = "";
-				res.render('groups', { title: 'Groups', groupArray: groupsObject.results });
+				if (groups.toString().slice(0, 6) !== '<html>') 
+				{
+					var groupsObject = JSON.parse(groups);
+					cache.put('groups', groupsObject.results, 3600000);
+					groups = "";
+					res.render('groups', { title: 'Groups', groupArray: groupsObject.results });
+				} else {
+					var groupsObject = {};
+					groupsObject.results = [];
+					res.render('groups', { title: 'Groups', groupArray: groupsObject.results });
+				}
 			});
 		});
 		greq.on('error', function(e) {
