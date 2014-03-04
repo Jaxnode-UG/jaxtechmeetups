@@ -1,7 +1,9 @@
 var https = require('https'),
 	events = "",
 	groups = "",
-	cache = require('memory-cache');
+	cache = require('memory-cache'),
+	fs = require('fs'),
+	path = require('path');
 
 var httpsOptions = {
 	hostname: 'api.meetup.com',
@@ -21,6 +23,7 @@ exports.events = function(req, res) {
 	var cEvents = cache.get('events');
 	if (cEvents !== null)
 	{
+		console.log('Cached Events ran');
 		res.render('events', { title: 'Events', eventArray: cEvents });
 	} else {
 		var sreq = https.request(httpsOptions, function (response) {
@@ -31,17 +34,33 @@ exports.events = function(req, res) {
 			});
 			response.on('end', function() {
 				console.log('request has ended.');
-				console.log(events.toString().slice(0, 6));
-				if (events && events.toString().slice(0, 6) !== '<html>') {
-					console.log(events);
+				console.log(process.cwd() + '/events.json');
+				if (events && events.toString().slice(0, 6) !== '<html>' && events.toString().slice(0, 15) !== '<!DOCTYPE html>') {
+					console.log('https Events ran');
+					fs.writeFile(path.join(process.cwd(), 'events.json'), events, function (err) {
+						if (err) 
+							throw err;
+					  console.log('It\'s saved!');
+					});
 					var eventsObject = JSON.parse(events);
 					cache.put('events', eventsObject.results, 3600000);
 					events = "";
 					res.render('events', { title: 'Events', eventArray: eventsObject.results });
 				} else {
-					var eventsObject = {};
-					eventsObject.results = [];
-					res.render('events', { title: 'Events', eventArray: eventsObject.results });
+					events = "";
+					fs.readFile(path.join(process.cwd(), 'events.json'), function (err, data) {
+						var eventsObject = {};
+						if (err) {
+							console.log(err);
+							eventsObject.results = [];
+							res.render('events', { title: 'Events', eventArray: eventsObject.results });
+						} else {
+							console.log('file based Events ran');
+							eventsObject = JSON.parse(data);
+							cache.put('events', eventsObject.results, 3600000);
+							res.render('events', { title: 'Events', eventArray: eventsObject.results });
+						}
+					});
 				}
 			});
 		});
