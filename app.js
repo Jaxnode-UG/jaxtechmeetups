@@ -8,6 +8,7 @@ var express = require('express')
   , user = require('./routes/user')
   , meetups = require('./routes/meetups')
   , about = require('./routes/about')  
+  , tokens = require('./routes/tokens')
   , http = require('http')
   , path = require('path');
 
@@ -40,6 +41,8 @@ app.get('/', meetups.events);
 app.get('/events', meetups.events);
 app.get('/groups', meetups.groups);
 app.get('/about', about.index);
+app.get('/tokens', tokens.getAllTokens);
+app.post('/token/iostoken', tokens.addiOSToken);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
