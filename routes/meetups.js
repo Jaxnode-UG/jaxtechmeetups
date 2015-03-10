@@ -19,6 +19,11 @@ var options = {
   method: 'GET'
 };
 
+// Meetup API is adding witches to feed. Non-technical and needs to be removed.
+function removeWitchesFromArray(meetupArray) {
+	return meetupArray.filter(function (el) { return el.group.name !== "Jacksonville Witches"});
+}
+
 exports.events = function(req, res) {
 	var cEvents = cache.get('events');
 	if (cEvents !== null)
@@ -43,9 +48,10 @@ exports.events = function(req, res) {
 					  console.log('It\'s saved!');
 					});
 					var eventsObject = JSON.parse(events);
-					cache.put('events', eventsObject.results, 3600000);
+					var cleanEventArray = removeWitchesFromArray(eventsObject.results);
+					cache.put('events', cleanEventArray, 3600000);
 					events = "";
-					res.render('events', { title: 'Events', eventArray: eventsObject.results });
+					res.render('events', { title: 'Events', eventArray: cleanEventArray });
 				} else {
 					events = "";
 					fs.readFile(path.join(process.cwd(), 'events.json'), function (err, data) {
@@ -57,8 +63,9 @@ exports.events = function(req, res) {
 						} else {
 							console.log('file based Events ran');
 							eventsObject = JSON.parse(data);
-							cache.put('events', eventsObject.results, 3600000);
-							res.render('events', { title: 'Events', eventArray: eventsObject.results });
+							var cleanEventArray = removeWitchesFromArray(eventsObject.results);
+							cache.put('events', cleanEventArray, 3600000);
+							res.render('events', { title: 'Events', eventArray: cleanEventArray });
 						}
 					});
 				}
